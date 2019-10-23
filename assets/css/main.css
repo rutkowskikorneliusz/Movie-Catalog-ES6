@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.search {
+  height: 100vh;
+  width: 100vw;
+  background: #95afc0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.search__box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 400px;
+  position: relative;
+}
+
+.search__box .search__input {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-color: #dbdbdb;
+}
+
+.search__box .search__submit {
+  height: 100%;
+  width: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  background-color: yellow;
+}
+
+.search__box .search__submit:before {
+  content: "";
+  display: block;
+  height: 50px;
+  width: 50px;
+  background: url("../image/magnifying-glass.svg") no-repeat;
+}
+/*# sourceMappingURL=main.css.map */
