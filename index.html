@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/main.css">
 </head>
+
 <body>
     <div class="wrapper">
         <section id="search" class="search">
@@ -16,19 +18,27 @@
                 <input type="search" class="search__input">
                 <input type="submit" class="search__submit" value="SEARCH">
             </div>
+
         </section>
         <section id="series" class="series">
-            <div class="container" id="result">
-                <div class="series__item">
-                    <div class="series_rating"></div>
-                    <div class="series_image">
-                        <img src="https://via.placeholder.com/300" alt="">
+                <div class="sort_filter_bar">
+                        <ul class="sort_list">Sort by:
+                            <li><a data-sort="name" href="#">Name</a><i class="sort-reverse"></i></li>
+                            <li><a data-sort="rating" href="#">Rating</a><i class="sort-reverse"></i></li>
+                            <li><a data-sort="date" href="#">Release date</a><i class="sort-reverse"></i></li>
+                        </ul>
+                        <ul class="filter_opinion">
+                            <li><label><input type="checkbox" class="status-filter">Show only running series</label></li>
+                        </ul>
                     </div>
-                </div>
+            <div class="container" id="result"></div>
+            <div class="no-result">
+                <p>No more data to display</p>
             </div>
         </section>
     </div>
 
     <script src="./app.js"></script>
 </body>
+
 </html>
