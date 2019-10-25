@@ -3,10 +3,13 @@ const submitButton = document.querySelector('.search__submit');
 const noResultLabel = document.querySelector('.no-result');
 
 const statusFilter = document.querySelector('.status-filter');
+const releaseFilter = document.querySelector('.release-filter');
 const sortByRating = document.querySelector('.rating');
 const seriesContainer = document.querySelector('#result');
 const sortList = document.querySelectorAll('.sort_list li a');
 const reverseList = document.querySelectorAll('.sort-reverse');
+
+
 
 let allSeries = [];
 let filteredList = [];
@@ -17,7 +20,6 @@ let filterActive = false;
 
 const searchQuery = () => {
     allSeries = [];
-    lastItem=0;
     (searchInput.value == "") ? getAllSeries() : '' ;
 
     fetch(`http://api.tvmaze.com/search/shows?q=${searchInput.value}`)
@@ -28,19 +30,14 @@ const searchQuery = () => {
             allSeries.push(item.show);
         });
     }).then(_=> {
-        seriesContainer.innerHTML = "";
-        displaySeries(allSeries);
+        displayAllSeries(true);
         getOldestAndNewestReleaseYear()
-        window.scrollTo({
-            top: window.innerHeight/2,
-            behavior: 'smooth'
-        })
+        window.scrollTo({top: window.innerHeight/2,behavior: 'smooth'})
     })
 }
 
 const getAllSeries = () => {
     allSeries = [];
-    lastItem=0;
     fetch(`http://api.tvmaze.com/shows`)
     .then(response => response.json())
     .then(response => {
@@ -50,20 +47,26 @@ const getAllSeries = () => {
         });
     })
     .then(_ => {
-        seriesContainer.innerHTML = "";
-        displaySeries(allSeries);
+        displayAllSeries(true)
         getOldestAndNewestReleaseYear()
     })
 }
 
-function displaySeries(seriesToShow) {
+function displayAllSeries(displayFromFirst) {
 
-    let lastPageItem = (lastItem+pageOffset <= seriesToShow.length) ? lastItem+pageOffset : seriesToShow.length;
+    (displayFromFirst) ? lastItem=0 : '';
+    (lastItem == 0) ? seriesContainer.innerHTML = "" : '';
+
+    const seriesToShow = (!filterActive) ? allSeries : filteredList;
+    const lastPageItem = (lastItem+pageOffset <= seriesToShow.length) ? lastItem+pageOffset : seriesToShow.length;
 
     for(lastItem; lastItem<lastPageItem; lastItem++) {
-        let {image, name, status, premiered, rating, summary} = seriesToShow[lastItem];
-        printItem(image.original, name, status, premiered, rating, summary) 
+
+        let {image, name, status, premiered, rating, summary,externals} = seriesToShow[lastItem];
+        displayItem(image.original, name, status, premiered, rating, summary, externals.tvrage) 
+
     }
+
     if(seriesToShow.length == 0 || lastItem == seriesToShow.length) {
         noResultLabel.classList.add('no-result--is-active');
     } else {
@@ -71,59 +74,67 @@ function displaySeries(seriesToShow) {
     }
 }
 
-
-
-function loadMore() {
-    if (getScrollTop() < getDocumentHeight() - window.innerHeight) return;
-    filterActive ? displaySeries(filteredList) : displaySeries(allSeries);
-	
-}
-
-function getDocumentHeight() {
-	const body = document.body;
+const lazyLoadNextSeries = () => {
+    const body = document.body;
 	const html = document.documentElement;
-	
-	return Math.max(
+    const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+	const documentHeight = Math.max(
 		body.scrollHeight, body.offsetHeight,
 		html.clientHeight, html.scrollHeight, html.offsetHeight
-	);
-};
-
-function getScrollTop() {
-	return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    );
+    if (scrollTop < documentHeight - window.innerHeight) return;
+    displayAllSeries(false);
 }
 
-statusFilter.onchange = () => {
-    lastItem = 0;
-    if(statusFilter.checked) {
+// SORT AND FILTER
+
+//STATUS FILTER
+statusFilter.onchange = (e) => {
+    filteredList = [];
+    if(e.target.checked) {
         filterActive = true;
-        allSeries.forEach(item => {
-            if(item.status.toLowerCase() == "running") filteredList.push(item)
-        })
-        seriesContainer.innerHTML = "";
-        displaySeries(filteredList);
+        allSeries.forEach(item => {if(item.status.toLowerCase() == "running") filteredList.push(item)})
     }else {
         filterActive = false;
-        filteredList = [];
-        seriesContainer.innerHTML = "";
-        displaySeries(allSeries);
     }
+    displayAllSeries(true)
 }
+
+// RELASE YEAR
+releaseFilter.onchange = (e) => {
+    let fromValue = 2012;
+    let toValue = 2015;
+    let arrayToFilter = (!filterActive) ? allSeries : filteredList;
+    let filtered = [];
+    if(e.target.checked) {
+        arrayToFilter.forEach( item => {
+            const year = parseInt(item.premiered.substring(0,4));
+            if(year >= fromValue && year <= toValue) filtered.push(item) ;
+        })
+        filterActive=true;
+    }else {
+        filterActive=false;
+    }
+   
+    filteredList = filtered;
+    displayAllSeries(true);
+    
+}
+
 
 const sortSeriesList = (e) => {
       e.preventDefault();
       const sortOption = e.target.dataset.sort
-      allSeries.sort(sortByProperty(sortOption));
-      lastItem = 0;
-      seriesContainer.innerHTML = "";
-      displaySeries(allSeries);
+
+      const seriesToShow = (!filterActive) ? allSeries : filteredList;
+
+      seriesToShow.sort(sortByProperty(sortOption));
+      displayAllSeries(true);
 }
 const reverseSeriesList = (e) => {
-    e.target.classList.toggle('sort-reverse--is-active');
-    allSeries.reverse();
-    lastItem = 0;
-    seriesContainer.innerHTML = "";
-    displaySeries(allSeries);
+    const seriesToShow = (!filterActive) ? allSeries : filteredList;
+    seriesToShow.reverse();
+    displayAllSeries(true);
 }
 
 sortList.forEach(item => {
@@ -143,12 +154,12 @@ const getOldestAndNewestReleaseYear = () => {
     let arr = allSeries.map(year => parseInt(year.premiered.substring(0,4)));
     let oldestReleaseYear = Math.min(...arr);
     let newestRelaseYear = Math.max(...arr);
-    console.log(oldestReleaseYear)
-    console.log(newestRelaseYear)
+    // console.log(oldestReleaseYear)
+    // console.log(newestRelaseYear)
 }
 
 // Print one series item
-function printItem(image, title, status, relaseDate, rating, desc) {
+function displayItem(image, title, status, relaseDate, rating, desc, id) {
     image = (image) ? image : "https://picsum.photos/350/550/"
     rating = parseFloat(rating).toFixed(1);
     if(desc != null) {
@@ -157,7 +168,7 @@ function printItem(image, title, status, relaseDate, rating, desc) {
     else {
         desc = "No description to show..."
     }
-    let output = `<div class="item">`;
+    let output = `<div class="item" data-series="${id}">`;
         output += `<div class="item__image"><img src="${image}" role="presentation" /></div>`;
         output += `<div class="item__status ${(status == 'Running') ? 'item__status--is-active' : ''}"><span>${status}</span></div>`;
         output += `<div class="item__rating"><span>${rating}</span></div>`;
@@ -170,5 +181,10 @@ function printItem(image, title, status, relaseDate, rating, desc) {
 }
 
 submitButton.addEventListener('click', searchQuery);
-document.addEventListener('scroll', loadMore); 
+document.addEventListener('scroll', lazyLoadNextSeries); 
 document.onload = getAllSeries();
+
+// SOON MODAL 
+seriesContainer.addEventListener('click',function(e){
+    console.log(e.path[2].dataset.series)
+ });

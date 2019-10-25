@@ -119,14 +119,10 @@ body {
 
 .series .sort_filter_bar ul li .sort-reverse {
   margin-left: 5px;
-  height: 15px;
-  width: 15px;
+  height: 16px;
+  width: 16px;
   display: block;
-  background: url("../image/caret-down.svg") no-repeat;
-}
-
-.series .sort_filter_bar ul li .sort-reverse--is-active {
-  background: url("../image/sort-up.svg") no-repeat;
+  background: url("../image/sort-arrows.png") no-repeat;
 }
 
 .series .sort_filter_bar ul li .sort-reverse:hover {
