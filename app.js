@@ -17,57 +17,77 @@ let lastItem = 0;
 let pageOffset = 12;
 let filterActive = false;
 
+const hasQuery = () => searchInput.value != "";
 
+const onSearch = () => {
+    if (hasQuery()) {
+        searchQuery()
+    } else {
+        getAllSeries()
+    }
+}
+//image, title, status, relaseDate, rating, desc, i
+const transformResponse = show => {
+    const average = (show.rating.average) == null ? 0.0 : show.rating.average;
+    return {
+        image: show.image.original,
+        title: show.name,
+        status: show.status,
+        relaseDate: show.premiered,
+        rating: parseFloat(average).toFixed(1),
+        desc: show.summary
+    };
+
+
+}
 const searchQuery = () => {
     allSeries = [];
-    (searchInput.value == "") ? getAllSeries() : '' ;
 
     fetch(`http://api.tvmaze.com/search/shows?q=${searchInput.value}`)
-    .then(response => response.json())
-    .then(response => {
-        response.forEach(item => {
-            item.show.rating.average == null ? item.show.rating = 0.0 : item.show.rating = item.show.rating.average;
-            allSeries.push(item.show);
-        });
-    }).then(_=> {
-        displayAllSeries(true);
-        getOldestAndNewestReleaseYear()
-        window.scrollTo({top: window.innerHeight/2,behavior: 'smooth'})
-    })
+        .then(response => response.json())
+        .then(response => {
+
+            allSeries = response.map(item => transformResponse(item.show))
+        }).then(_ => {
+            displayAllSeries(true);
+            getOldestAndNewestReleaseYear()
+            window.scrollTo({ top: window.innerHeight / 2, behavior: 'smooth' })
+        })
 }
+
+//FIltrować przy wyświetlaniu
 
 const getAllSeries = () => {
     allSeries = [];
     fetch(`http://api.tvmaze.com/shows`)
-    .then(response => response.json())
-    .then(response => {
-        response.forEach(item => {
-            item.rating.average == null ? item.rating = 0.0 : item.rating = item.rating.average;
-            allSeries.push(item);
-        });
-    })
-    .then(_ => {
-        displayAllSeries(true)
-        getOldestAndNewestReleaseYear()
-    })
+
+
+        .then(response => response.json())
+        .then(response => {
+            allSeries = response.map(item => transformResponse(item))
+
+        })
+        .then(_ => {
+            displayAllSeries(true)
+            getOldestAndNewestReleaseYear()
+        })
 }
 
 function displayAllSeries(displayFromFirst) {
 
-    (displayFromFirst) ? lastItem=0 : '';
+    (displayFromFirst) ? lastItem = 0 : '';
     (lastItem == 0) ? seriesContainer.innerHTML = "" : '';
 
     const seriesToShow = (!filterActive) ? allSeries : filteredList;
-    const lastPageItem = (lastItem+pageOffset <= seriesToShow.length) ? lastItem+pageOffset : seriesToShow.length;
+    const lastPageItem = (lastItem + pageOffset <= seriesToShow.length) ? lastItem + pageOffset : seriesToShow.length;
 
-    for(lastItem; lastItem<lastPageItem; lastItem++) {
+    for (lastItem; lastItem < lastPageItem; lastItem++) {
 
-        let {image, name, status, premiered, rating, summary,externals} = seriesToShow[lastItem];
-        displayItem(image.original, name, status, premiered, rating, summary, externals.tvrage) 
+        displayItem(seriesToShow[lastItem])
 
     }
 
-    if(seriesToShow.length == 0 || lastItem == seriesToShow.length) {
+    if (seriesToShow.length == 0 || lastItem == seriesToShow.length) {
         noResultLabel.classList.add('no-result--is-active');
     } else {
         noResultLabel.classList.remove('no-result--is-active');
@@ -76,11 +96,11 @@ function displayAllSeries(displayFromFirst) {
 
 const lazyLoadNextSeries = () => {
     const body = document.body;
-	const html = document.documentElement;
+    const html = document.documentElement;
     const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-	const documentHeight = Math.max(
-		body.scrollHeight, body.offsetHeight,
-		html.clientHeight, html.scrollHeight, html.offsetHeight
+    const documentHeight = Math.max(
+        body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight
     );
     if (scrollTop < documentHeight - window.innerHeight) return;
     displayAllSeries(false);
@@ -91,10 +111,10 @@ const lazyLoadNextSeries = () => {
 //STATUS FILTER
 statusFilter.onchange = (e) => {
     filteredList = [];
-    if(e.target.checked) {
+    if (e.target.checked) {
         filterActive = true;
-        allSeries.forEach(item => {if(item.status.toLowerCase() == "running") filteredList.push(item)})
-    }else {
+        allSeries.forEach(item => { if (item.status.toLowerCase() == "running") filteredList.push(item) })
+    } else {
         filterActive = false;
     }
     displayAllSeries(true)
@@ -106,30 +126,30 @@ releaseFilter.onchange = (e) => {
     let toValue = 2015;
     let arrayToFilter = (!filterActive) ? allSeries : filteredList;
     let filtered = [];
-    if(e.target.checked) {
-        arrayToFilter.forEach( item => {
-            const year = parseInt(item.premiered.substring(0,4));
-            if(year >= fromValue && year <= toValue) filtered.push(item) ;
+    if (e.target.checked) {
+        arrayToFilter.forEach(item => {
+            const year = parseInt(item.premiered.substring(0, 4));
+            if (year >= fromValue && year <= toValue) filtered.push(item);
         })
-        filterActive=true;
-    }else {
-        filterActive=false;
+        filterActive = true;
+    } else {
+        filterActive = false;
     }
-   
+
     filteredList = filtered;
     displayAllSeries(true);
-    
+
 }
 
 
 const sortSeriesList = (e) => {
-      e.preventDefault();
-      const sortOption = e.target.dataset.sort
+    e.preventDefault();
+    const sortOption = e.target.dataset.sort
 
-      const seriesToShow = (!filterActive) ? allSeries : filteredList;
+    const seriesToShow = (!filterActive) ? allSeries : filteredList;
 
-      seriesToShow.sort(sortByProperty(sortOption));
-      displayAllSeries(true);
+    seriesToShow.sort(sortByProperty(sortOption));
+    displayAllSeries(true);
 }
 const reverseSeriesList = (e) => {
     const seriesToShow = (!filterActive) ? allSeries : filteredList;
@@ -145,46 +165,56 @@ reverseList.forEach(item => {
     item.addEventListener('click', reverseSeriesList);
 })
 const sortByProperty = (property) => {
-    return  (x, y) => {
+    return (x, y) => {
         return ((x[property] === y[property]) ? 0 : ((x[property] < y[property]) ? 1 : -1));
     }
 };
 
 const getOldestAndNewestReleaseYear = () => {
-    let arr = allSeries.map(year => parseInt(year.premiered.substring(0,4)));
-    let oldestReleaseYear = Math.min(...arr);
-    let newestRelaseYear = Math.max(...arr);
+    // let arr = allSeries.map(year => parseInt(year.premiered.substring(0,4)));
+    // let oldestReleaseYear = Math.min(...arr);
+    // let newestRelaseYear = Math.max(...arr);
     // console.log(oldestReleaseYear)
     // console.log(newestRelaseYear)
 }
 
 // Print one series item
-function displayItem(image, title, status, relaseDate, rating, desc, id) {
-    image = (image) ? image : "https://picsum.photos/350/550/"
-    rating = parseFloat(rating).toFixed(1);
-    if(desc != null) {
-        desc = (desc.length > 100) ? desc.substring(0, 97) + "..." : desc;
-    }
-    else {
-        desc = "No description to show..."
-    }
-    let output = `<div class="item" data-series="${id}">`;
-        output += `<div class="item__image"><img src="${image}" role="presentation" /></div>`;
-        output += `<div class="item__status ${(status == 'Running') ? 'item__status--is-active' : ''}"><span>${status}</span></div>`;
-        output += `<div class="item__rating"><span>${rating}</span></div>`;
-        output += `<div class="item__title"><h2>${title}</h2></div>`;
-        output += `<div class="item__relase"><span>${relaseDate}</span></div>`;
-        output +=  `<div class="item__desc"><p>${desc.replace(/(<([^>]+)>)/ig,"")}</p></div>`;
-        output += '</div>';
+function displayItem(item) {
+    let { image, title, status, relaseDate, rating, desc } = item;
 
-        seriesContainer.innerHTML += output;
+    image = (image) ? image : "https://picsum.photos/350/550/"
+
+
+    let output = `<div class="item" data-series="">`;
+    output += `<div class="item__image"><img src="${image}" role="presentation" /></div>`;
+    output += `<div class="item__status ${(status == 'Running') ? 'item__status--is-active' : ''}"><span>${status}</span></div>`;
+    output += `<div class="item__rating"><span>${rating}</span></div>`;
+    output += `<div class="item__title"><h2>${title}</h2></div>`;
+    output += `<div class="item__relase"><span>${relaseDate}</span></div>`;
+    output += `<div class="item__desc"><p>${getDescription(item)}</p></div>`;
+    output += '</div>';
+
+    seriesContainer.innerHTML += output;
 }
 
-submitButton.addEventListener('click', searchQuery);
-document.addEventListener('scroll', lazyLoadNextSeries); 
+submitButton.addEventListener('click', onSearch);
+document.addEventListener('scroll', lazyLoadNextSeries);
 document.onload = getAllSeries();
 
 // SOON MODAL 
-seriesContainer.addEventListener('click',function(e){
+seriesContainer.addEventListener('click', function (e) {
     console.log(e.path[2].dataset.series)
- });
+});
+
+const stripHtmlTags = html => html.replace(/(<([^>]+)>)/ig, "")
+
+const getDescription = ({ desc }) => {
+    if (desc) {
+        const stripedText = stripHtmlTags(desc)
+        return stripedText.length > 100 ?
+            stripedText.substring(0, 97) + "..." : stripedText;
+    } else {
+        return "No description to show...";
+    }
+
+};
