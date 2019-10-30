@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,13 +22,14 @@
         <section id="series" class="series">
                 <div class="sort_filter_bar">
                         <ul class="sort_list">Sort by:
-                            <li><a data-sort="name" href="#">Name</a><i class="sort-reverse"></i></li>
+                            <li><a data-sort="title" href="#">Name</a><i class="sort-reverse"></i></li>
                             <li><a data-sort="rating" href="#">Rating</a><i class="sort-reverse"></i></li>
-                            <li><a data-sort="premiered" href="#">Release date</a><i class="sort-reverse"></i></li>
+                            <li><a data-sort="relaseDate" href="#">Release date</a><i class="sort-reverse"></i></li>
                         </ul>
                         <ul class="filter_opinion">
                             <li><label><input type="checkbox" class="status-filter">Show only running series</label></li>
-                            <li><label><input type="checkbox" class="release-filter">Filter by release date</label></li>
+                            <li><select class="oldestValue"></select></li>
+                            <li><select class="newestValue"></select></li>
                         </ul>
                     </div>
             <div class="container" id="result"></div>
@@ -38,8 +38,6 @@
             </div>
         </section>
     </div>
-
     <script src="./app.js"></script>
 </body>
-
 </html>
