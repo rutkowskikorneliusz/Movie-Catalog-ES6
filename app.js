@@ -96,8 +96,8 @@ function displayItem(item) {
     output += `<div class="item__status ${(status == 'Running') ? 'item__status--is-active' : ''}"><span>${status}</span></div>`;
     output += `<div class="item__rating"><span>${rating}</span></div>`;
     output += `<div class="item__title"><h2>${title}</h2></div>`;
-    output += `<div class="item__relase"><span>${relaseDate}</span></div>`;
     output += `<div class="item__desc"><p>${getDescription(desc)}</p></div>`;
+    output += `<div class="item__relase"><span>${getYear(relaseDate)}</span></div>`;
     output += '</div>';
     seriesContainer.innerHTML += output;
 }
@@ -169,7 +169,9 @@ const getDescription = desc => {
     } 
     return desc   
 };
-
+const getYear = relaseDate => {
+    return relaseDate.substring(0,4);
+}
 const getOldestAndNewestReleaseYear = () => {
     let arr = allSeries.map(item => parseInt(item.relaseDate.substring(0, 4)));
     fromYearFilterValue = Math.min(...arr);

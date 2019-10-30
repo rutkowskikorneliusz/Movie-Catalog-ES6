@@ -5,12 +5,13 @@ body {
           box-sizing: border-box;
   font-family: 'Montserrat', sans-serif;
   overflow-x: hidden;
+  background: #E9E9E9;
 }
 
 .search {
   padding: 20px 0;
-  width: 100vw;
-  background: #95afc0;
+  width: 100%;
+  background: #487eb0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -164,69 +165,19 @@ body {
   border-bottom: 2px solid #5a6674;
 }
 
+.result {
+  margin: 0 auto;
+  padding: 0 2em;
+  max-width: 1310px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(290px, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-gap: 2rem;
+}
+
 .series {
-  margin-top: 100px;
-}
-
-.series .sort_filter_bar {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 79px;
-  height: 80px;
-  background: #dfe6e9;
-  display: none;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  z-index: 2;
-}
-
-.series .sort_filter_bar ul {
-  list-style: none;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
-.series .sort_filter_bar ul li {
-  margin: 0 20px;
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.series .sort_filter_bar ul li a {
-  text-decoration: none;
-  color: #000;
-}
-
-.series .sort_filter_bar ul li a.is-active {
-  font-weight: bold;
-}
-
-.series .sort_filter_bar ul li .sort-reverse {
-  margin-left: 5px;
-  height: 16px;
-  width: 16px;
-  display: block;
-  background: url("../image/sort-arrows.png") no-repeat;
-}
-
-.series .sort_filter_bar ul li .sort-reverse:hover {
-  cursor: pointer;
+  margin-top: 9em;
 }
 
 .series .no-result {
@@ -260,13 +211,15 @@ body {
 }
 
 .series .item {
-  width: 350px;
+  width: 100%;
   height: auto;
-  border: 2px solid black;
   position: relative;
-  margin: 40px;
   -webkit-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
+  border-radius: 0 0 10px 10px;
+  background: #fff;
+  -webkit-box-shadow: 0px 10px 22px -1px rgba(0, 0, 0, 0.5);
+          box-shadow: 0px 10px 22px -1px rgba(0, 0, 0, 0.5);
 }
 
 .series .item__image {
@@ -283,12 +236,12 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  max-width: 350px;
+  max-height: 380px;
+  overflow: hidden;
 }
 
 .series .item__image img {
   width: 100%;
-  height: 100%;
 }
 
 .series .item__rating {
@@ -305,7 +258,7 @@ body {
   width: 80px;
   position: absolute;
   right: 0px;
-  top: 60%;
+  top: 50%;
   background: #f0932b;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
@@ -342,7 +295,7 @@ body {
       -ms-flex-pack: end;
           justify-content: flex-end;
   position: absolute;
-  top: 50%;
+  top: 40%;
   right: 0;
   background: #6ab04c;
   height: 50px;
@@ -364,26 +317,38 @@ body {
   margin-right: 10px;
 }
 
-.container {
-  margin: 0 auto;
-  width: 1310px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+.series .item__title {
+  font-size: 1.1rem;
+  padding: 0 20px;
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
 }
 
-@media (max-width: 768px) {
-  .container {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    width: 100%;
-    padding: 0 20px;
-  }
+.series .item__title::after {
+  content: '';
+  top: 100%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  position: absolute;
+  display: block;
+  background: #487eb0;
+  margin-top: 8px;
+  height: 3px;
+  width: 80px;
+}
+
+.series .item__relase {
+  text-align: center;
+  padding: 10px 0;
+  font-size: .95rem;
+  font-weight: bold;
+}
+
+.series .item__desc {
+  text-align: center;
+  word-break: break-all;
+  padding: 0 20px;
 }
 /*# sourceMappingURL=main.css.map */
