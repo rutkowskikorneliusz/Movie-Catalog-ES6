@@ -1,5 +1,5 @@
-const searchInput = document.querySelector('.search__input');
-const submitButton = document.querySelector('.search__submit');
+const searchInput = document.querySelector('.search-input');
+const submitButton = document.querySelector('.search-button');
 const noResultLabel = document.querySelector('.no-result');
 const seriesContainer = document.querySelector('#result');
 
@@ -9,7 +9,7 @@ const oldestValueSelect= document.querySelector('.oldestValue');
 const newestValueSelect = document.querySelector('.newestValue');
 
 // Sort handlers
-const sortList = document.querySelectorAll('.sort_list li a');
+const sortList = document.querySelectorAll('.sort-dropdown li a');
 const reverseList = document.querySelectorAll('.sort-reverse');
 
 // All data geted from API
@@ -36,7 +36,6 @@ const searchQuery = () => {
             getOldestAndNewestReleaseYear()
             setYearFilterValue();
             displaySeries(false);
-            window.scrollTo({ top: window.innerHeight / 2, behavior: 'smooth' })
         })
 }
 // Get all series data
@@ -92,7 +91,6 @@ function displayItem(item) {
     let { id, image, title, status, relaseDate, rating, desc } = item;
     image = (image) ? image : "https://picsum.photos/350/550/";
 
-    console.log(getDescription(desc))
     let output = `<div class="item" data-series="${id}">`;
     output += `<div class="item__image"><img src="${image}" role="presentation" /></div>`;
     output += `<div class="item__status ${(status == 'Running') ? 'item__status--is-active' : ''}"><span>${status}</span></div>`;
@@ -134,6 +132,7 @@ const sortSeriesList = (e) => {
     e.preventDefault();
     const sortOption = e.target.dataset.sort
     allSeries.sort(sortByProperty(sortOption));
+    
     displaySeries(false);
 }
 const reverseSeriesList = () => {
@@ -171,8 +170,6 @@ const getDescription = desc => {
     return desc   
 };
 
-
-
 const getOldestAndNewestReleaseYear = () => {
     let arr = allSeries.map(item => parseInt(item.relaseDate.substring(0, 4)));
     fromYearFilterValue = Math.min(...arr);
@@ -190,7 +187,6 @@ const setYearFilterValue = () => {
     }
 }
 
-
 const transformResponse = show => {
     const average = (show.rating.average) == null ? 0.0 : show.rating.average;
     const description = (show.summary) ? stripHtmlTags(show.summary) : "No description to display..";
@@ -205,22 +201,13 @@ const transformResponse = show => {
     }
 }
 
-
-
-// const getDescription = (desc) => {
-//     if (desc.length > 100) {
-//         return desc.substring(0, 100)
-//     } else {
-//         return desc
-//     }
-// };
-// SOON MODAL 
-seriesContainer.addEventListener('click', function (e) {
-    console.log(e.path[2].dataset.series)
-});
-
-
 document.onload = allSeriesQuery();
 document.addEventListener('scroll', lazyLoadNextSeries);
 submitButton.addEventListener('click', onSearch);
+searchInput.addEventListener('keyup', e => {
+    if (e.keyCode === 13) {
+        e.preventDefault();
+        onSearch();
+      }
+})
 
