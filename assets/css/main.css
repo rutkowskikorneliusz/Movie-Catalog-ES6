@@ -121,7 +121,7 @@ body {
 }
 
 .search .sort-list .sort-dropdown {
-  border-top: 2px solid #5a6674;
+  width: 150px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -139,11 +139,27 @@ body {
   -webkit-transition: all 0.6s ease-in-out;
   transition: all 0.6s ease-in-out;
   line-height: 1;
+  border-top: 2px solid #5a6674;
+}
+
+.search .sort-list .sort-dropdown.filter li {
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 .search .sort-list .sort-dropdown li {
   text-align: center;
   padding: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .search .sort-list .sort-dropdown li a {
@@ -152,8 +168,11 @@ body {
   font-size: 1.1rem;
 }
 
-.search .sort-list .sort-dropdown li a::after {
-  content: '';
+.search .sort-list .sort-dropdown li:hover {
+  border-bottom: 2px solid #5a6674;
+}
+
+.search .sort-list .sort-dropdown li .sort-reverse {
   display: block;
   margin-left: 5px;
   height: 16px;
@@ -161,8 +180,9 @@ body {
   background: url("../image/sort-arrows.png") no-repeat;
 }
 
-.search .sort-list .sort-dropdown li:hover {
-  border-bottom: 2px solid #5a6674;
+.search .sort-list .oldestValue,
+.search .sort-list .newestValue {
+  margin-left: 5px;
 }
 
 .result {
@@ -192,6 +212,7 @@ body {
       -ms-flex-align: center;
           align-items: center;
   opacity: 0;
+  margin-top: 50px;
 }
 
 .series .no-result--is-active {
@@ -318,7 +339,7 @@ body {
 }
 
 .series .item__title {
-  font-size: 1.1rem;
+  font-size: 1.0rem;
   padding: 0 20px;
   text-transform: uppercase;
   text-align: center;
@@ -340,15 +361,23 @@ body {
 }
 
 .series .item__relase {
-  text-align: center;
-  padding: 10px 0;
+  top: -20px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  position: absolute;
+  background: #B53471;
+  border-radius: 10%;
+  padding: 10px 15px;
   font-size: .95rem;
+  text-align: center;
   font-weight: bold;
+  color: #fff;
 }
 
 .series .item__desc {
   text-align: center;
-  word-break: break-all;
+  word-break: break-word;
   padding: 0 20px;
 }
 /*# sourceMappingURL=main.css.map */

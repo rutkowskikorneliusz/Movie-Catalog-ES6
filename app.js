@@ -165,10 +165,37 @@ const stripHtmlTags = html => html.replace(/(<([^>]+)>)/ig, "");
 
 const getDescription = desc => { 
     if (desc.length > 100) {
-        return desc.substring(0, 100)
+        return truncateString(desc, 100, '...')
     } 
     return desc   
 };
+
+const truncateString = (str, len, append) => {
+   let newLength;
+   append = append || "";  
+   
+   if (append.length > 0)
+    {
+      append = " "+append; 
+    }
+   if (str.indexOf(' ')+append.length > len)
+   {
+       return str;   
+   }
+   
+   str.length+append.length > len ? newLength = len-append.length : newLength = str.length; 
+   
+		let tempString = str.substring(0, newLength);  
+		tempString = tempString.replace(/\s+\S*$/, ""); 
+
+   
+   if (append.length > 0)
+      {
+		   tempString = tempString + append;
+      }
+
+   return tempString;
+}
 const getYear = relaseDate => {
     return relaseDate.substring(0,4);
 }

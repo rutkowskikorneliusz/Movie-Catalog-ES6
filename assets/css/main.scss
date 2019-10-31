@@ -90,7 +90,7 @@ body {
             opacity: 1;
         }
         .sort-dropdown {
-            border-top: 2px solid #5a6674;
+            width: 150px;
             margin: 0;
             padding: 0;
             list-style: none;
@@ -104,32 +104,41 @@ body {
             font-weight: normal;
             transition: all 0.6s ease-in-out;
             line-height: 1;
+            border-top: 2px solid #5a6674;
 
+            &.filter li{
+                justify-content: flex-end;
+            }
             li {
                 text-align: center;
                 padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 a {
                     text-decoration: none;
                     color: #5a6674;
                     font-size: 1.1rem;
-
-                    &::after {
-                        content: '';
-                        display: block;
-                        margin-left: 5px;
-                        height: 16px;
-                        width: 16px;
-                        background: url('../image/sort-arrows.png') no-repeat;
-                    }
                 }
                 &:hover  {
                     border-bottom: 2px solid #5a6674;
                 }
+            
+                .sort-reverse {
+                    display: block;
+                    margin-left: 5px;
+                    height: 16px;
+                    width: 16px;
+                    background: url('../image/sort-arrows.png') no-repeat;
+                }
             }
          }
+         .oldestValue,
+         .newestValue {
+             margin-left: 5px;
+         }
       }
-
 }
 
 .result {
@@ -152,7 +161,7 @@ body {
         justify-content: center;
         align-items: center;
         opacity: 0;
-        
+        margin-top: 50px;
         &--is-active {
             opacity: 1;
             display: flex;
@@ -248,7 +257,7 @@ body {
         }
 
         &__title {
-            font-size: 1.1rem;
+            font-size: 1.0rem;
             padding: 0 20px;
             text-transform: uppercase;
             text-align: center;
@@ -267,17 +276,23 @@ body {
             }
         }
         &__relase {
-            text-align: center;
-            padding: 10px 0;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            position: absolute;
+            background: #B53471;
+            border-radius: 10%;
+            padding: 10px 15px;
             font-size: .95rem;
+            text-align: center;
             font-weight: bold;
+            color: #fff;
 
         }
         &__desc {
             text-align: center;
-            word-break: break-all;
+            word-break: break-word;
             padding: 0 20px;
-            // max-height: 100px;
         }
     }
 
